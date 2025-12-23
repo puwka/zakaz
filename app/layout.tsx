@@ -5,6 +5,10 @@ import CookieConsent from "@/components/CookieConsent";
 export const metadata: Metadata = {
   title: "ЦЕХ 'Деревянное дело' - Премиальная мебель из дерева",
   description: "Премиальная столярная мастерская. Мебель из натурального дерева ручной работы",
+  icons: {
+    icon: '/favicon.png',
+    apple: '/favicon.png',
+  },
 };
 
 export default function RootLayout({

@@ -146,7 +146,7 @@ export default function HomePageClient({ content }: HomePageClientProps) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight"
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-4 md:mb-6 leading-tight px-4"
           >
             {heroTitle.split('\n').map((line, i) => (
               <span key={i}>
@@ -160,7 +160,7 @@ export default function HomePageClient({ content }: HomePageClientProps) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6 }}
-            className="text-xl md:text-2xl text-gray-200 mb-12 max-w-3xl mx-auto leading-relaxed"
+            className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-200 mb-8 md:mb-12 max-w-3xl mx-auto leading-relaxed px-4"
           >
             {heroSubtitle}
           </motion.p>
@@ -204,7 +204,7 @@ export default function HomePageClient({ content }: HomePageClientProps) {
             transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-bold text-text-primary mb-4">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-text-primary mb-4">
               {advantagesTitle}
             </h2>
             <p className="text-lg text-text-secondary max-w-2xl mx-auto">
@@ -258,7 +258,7 @@ export default function HomePageClient({ content }: HomePageClientProps) {
             transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-bold text-text-primary mb-4">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-text-primary mb-4">
               {workStepsTitle}
             </h2>
             <p className="text-lg text-text-secondary max-w-2xl mx-auto">
@@ -436,7 +436,7 @@ export default function HomePageClient({ content }: HomePageClientProps) {
             transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-bold text-text-primary mb-4">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-text-primary mb-4">
               {faqTitle}
             </h2>
             <p className="text-lg text-text-secondary">

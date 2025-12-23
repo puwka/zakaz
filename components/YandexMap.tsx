@@ -175,7 +175,7 @@ export default function YandexMap({
       <div 
         ref={mapRef} 
         className="w-full h-full rounded-2xl overflow-hidden"
-        style={{ minHeight: '500px' }}
+        style={{ minHeight: '400px' }}
       />
       {!isLoaded && (
         <div className="absolute inset-0 flex items-center justify-center bg-bg-secondary rounded-2xl">

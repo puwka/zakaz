@@ -56,8 +56,11 @@ TELEGRAM_CHAT_ID=your-telegram-chat-id      # опционально
 |-----------|----------|-------------|
 | `NEXT_PUBLIC_SUPABASE_URL` | URL вашего Supabase проекта | ✅ Да |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Anon key из Supabase | ✅ Да |
+| `SUPABASE_SERVICE_ROLE_KEY` | Service Role key из Supabase (для управления администраторами) | ❌ Нет* |
 | `TELEGRAM_BOT_TOKEN` | Токен Telegram бота | ❌ Нет |
 | `TELEGRAM_CHAT_ID` | ID чата для Telegram | ❌ Нет |
+
+\* *Рекомендуется для использования функций управления администраторами. См. `ADMIN_SETUP.md`*
 
 **Важно:** 
 - Переменные с префиксом `NEXT_PUBLIC_` доступны в браузере

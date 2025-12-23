@@ -101,10 +101,10 @@ export default function CatalogContent({
         transition={{ duration: 0.6 }}
         className="mb-16"
       >
-        <h1 className="text-5xl md:text-6xl font-bold text-text-primary mb-4">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-text-primary mb-4">
           Каталог товаров
         </h1>
-        <p className="text-xl text-text-secondary max-w-3xl">
+        <p className="text-base sm:text-lg md:text-xl text-text-secondary max-w-3xl">
           Премиальная мебель из натурального дерева ручной работы. 
           Каждое изделие создается с любовью и вниманием к деталям.
         </p>
@@ -121,7 +121,7 @@ export default function CatalogContent({
           <h2 className="text-2xl font-bold text-text-primary mb-6">
             Категории
           </h2>
-          <div className="grid grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-3 md:gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 md:gap-4">
             {categories.map((category, index) => (
               <motion.div
                 key={category.id}
@@ -187,7 +187,7 @@ export default function CatalogContent({
               placeholder="Поиск товаров по названию или описанию..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-wood/10 focus:border-wood transition-all duration-300 text-lg"
+              className="w-full pl-12 pr-4 py-3 md:py-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-wood/10 focus:border-wood transition-all duration-300 text-base md:text-lg"
             />
             {searchQuery && (
               <button
@@ -203,13 +203,13 @@ export default function CatalogContent({
           <div className="flex flex-wrap gap-2">
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className={`px-6 py-4 rounded-xl border-2 transition-all duration-300 flex items-center gap-2 ${
+              className={`px-4 md:px-6 py-3 md:py-4 rounded-xl border-2 transition-all duration-300 flex items-center gap-2 text-sm md:text-base ${
                 showFilters || selectedCategory
                   ? 'border-wood bg-wood text-white'
                   : 'border-gray-200 bg-white text-text-secondary hover:border-wood/50'
               }`}
             >
-              <Filter className="w-5 h-5" />
+              <Filter className="w-4 h-4 md:w-5 md:h-5" />
               <span className="hidden sm:inline">Фильтры</span>
             </button>
             
@@ -218,7 +218,7 @@ export default function CatalogContent({
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
-                className="appearance-none px-6 py-4 pr-10 rounded-xl border-2 border-gray-200 bg-white text-text-secondary hover:border-wood/50 focus:border-wood focus:ring-4 focus:ring-wood/10 transition-all duration-300 cursor-pointer"
+                className="appearance-none px-4 md:px-6 py-3 md:py-4 pr-8 md:pr-10 rounded-xl border-2 border-gray-200 bg-white text-text-secondary hover:border-wood/50 focus:border-wood focus:ring-4 focus:ring-wood/10 transition-all duration-300 cursor-pointer text-sm md:text-base"
               >
                 <option value="newest">Сначала новые</option>
                 <option value="price-asc">Цена: по возрастанию</option>

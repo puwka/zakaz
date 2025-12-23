@@ -30,14 +30,44 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 3. Установите bucket как публичный (Public bucket)
 4. Настройте политики доступа (они уже включены в SQL скрипт)
 
-## Шаг 5: Создание пользователя-админа
+## Шаг 5: Настройка Service Role Key
 
-1. В Supabase Dashboard перейдите в Authentication → Users
-2. Нажмите "Add user" → "Create new user"
+1. В Supabase Dashboard перейдите в **Settings** → **API**
+2. Найдите раздел **Project API keys**
+3. Скопируйте **`service_role` key** (⚠️ **НЕ** `anon` key!)
+4. Добавьте в `.env.local`:
+   ```env
+   SUPABASE_SERVICE_ROLE_KEY=your-service-role-key-here
+   ```
+
+## Шаг 6: Создание пользователя-админа
+
+### Вариант 1: Через скрипт (рекомендуется)
+
+1. Установите зависимости (если еще не установлены):
+   ```bash
+   npm install
+   ```
+
+2. Запустите скрипт создания администратора:
+   ```bash
+   node scripts/create-admin.js your-email@example.com your-password
+   ```
+
+   Пример:
+   ```bash
+   node scripts/create-admin.js admin@example.com mypassword123
+   ```
+
+### Вариант 2: Через Supabase Dashboard
+
+1. В Supabase Dashboard перейдите в **Authentication** → **Users**
+2. Нажмите **"Add user"** → **"Create new user"**
 3. Введите email и пароль для админа
-4. Сохраните учетные данные для входа в админ-панель
+4. ⚠️ **Важно:** Убедитесь, что email подтвержден (email_confirm: true)
+5. Сохраните учетные данные для входа в админ-панель
 
-## Шаг 6: Запуск проекта
+## Шаг 7: Запуск проекта
 
 ```bash
 npm run dev
@@ -45,7 +75,7 @@ npm run dev
 
 Откройте [http://localhost:3000](http://localhost:3000) в браузере.
 
-## Шаг 7: Тестирование
+## Шаг 8: Тестирование
 
 1. **Публичная часть:**
    - Откройте главную страницу
@@ -59,11 +89,43 @@ npm run dev
    - Добавьте несколько товаров через админ-панель
    - Проверьте отображение заказов
 
+## Решение проблем
+
+### Ошибка "Invalid login credentials"
+
+Если вы не можете войти в админ-панель:
+
+1. **Проверьте настройки Supabase Auth:**
+   - Откройте Supabase Dashboard → **Authentication** → **Settings**
+   - Убедитесь, что **"Enable email confirmations"** отключено (для тестирования)
+   - Или убедитесь, что email пользователя подтвержден
+
+2. **Создайте администратора через скрипт:**
+   ```bash
+   node scripts/create-admin.js your-email@example.com your-password
+   ```
+
+3. **Проверьте переменные окружения:**
+   - Убедитесь, что `NEXT_PUBLIC_SUPABASE_URL` и `NEXT_PUBLIC_SUPABASE_ANON_KEY` правильные
+   - Проверьте, что `SUPABASE_SERVICE_ROLE_KEY` добавлен в `.env.local`
+
+4. **Проверьте пользователя в Supabase:**
+   - Откройте Supabase Dashboard → **Authentication** → **Users**
+   - Убедитесь, что пользователь существует и email подтвержден
+
+### Ошибка 401 при работе с API
+
+Если API routes возвращают 401:
+- Убедитесь, что вы залогинены в админ-панели
+- Проверьте, что cookies передаются в запросах (должно быть `credentials: 'include'`)
+- Проверьте логи в консоли браузера и на сервере
+
 ## Примечания
 
 - Для загрузки изображений товаров используйте формат JPG, PNG или WebP
 - Рекомендуемый размер изображений: 800x800px или больше
 - Все изображения автоматически загружаются в Supabase Storage bucket `products`
+- **Service Role Key** имеет полный доступ к базе данных - храните его в безопасности!
 
 
 

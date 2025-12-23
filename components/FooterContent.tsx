@@ -12,8 +12,8 @@ interface FooterContentProps {
 export default function FooterContent({ address, phone, email }: FooterContentProps) {
   return (
     <footer className="bg-gray-800 text-white">
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           <div>
             <div className="flex items-center gap-3 mb-4">
               <div className="relative w-12 h-12 flex-shrink-0">
@@ -24,11 +24,11 @@ export default function FooterContent({ address, phone, email }: FooterContentPr
                   className="rounded-full object-cover"
                 />
               </div>
-              <h3 className="text-xl font-bold text-wood-400">
-                ЦЕХ "Деревянное дело"
-              </h3>
+            <h3 className="text-lg sm:text-xl font-bold text-wood-400">
+              ЦЕХ "Деревянное дело"
+            </h3>
             </div>
-            <p className="text-gray-400 mb-4">
+            <p className="text-sm sm:text-base text-gray-400 mb-4">
               Премиальная мебель из натурального дерева ручной работы
             </p>
           </div>
@@ -79,8 +79,8 @@ export default function FooterContent({ address, phone, email }: FooterContentPr
             </ul>
           </div>
         </div>
-        <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-          <p>© 2024 ЦЕХ "Деревянное дело". Все права защищены.</p>
+        <div className="border-t border-gray-700 mt-6 md:mt-8 pt-6 md:pt-8 text-center text-gray-400">
+          <p className="text-sm sm:text-base">© 2024 ЦЕХ "Деревянное дело". Все права защищены.</p>
         </div>
       </div>
     </footer>

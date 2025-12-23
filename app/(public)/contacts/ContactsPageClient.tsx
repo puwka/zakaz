@@ -168,10 +168,10 @@ export default function ContactsPageClient({ content }: ContactsPageClientProps)
             transition={{ duration: 0.5, ease: 'easeOut' }}
             className="text-center"
           >
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-text-primary mb-4">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-text-primary mb-4">
               {heroTitle}
             </h1>
-            <p className="text-lg text-text-secondary max-w-3xl mx-auto leading-relaxed">
+            <p className="text-base sm:text-lg text-text-secondary max-w-3xl mx-auto leading-relaxed px-4">
               {heroSubtitle}
             </p>
           </motion.div>
@@ -181,7 +181,7 @@ export default function ContactsPageClient({ content }: ContactsPageClientProps)
       {/* Контакты и форма */}
       <section className="py-16 md:py-24 bg-white">
         <div className="container mx-auto px-4 md:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16">
             {/* Контактная информация */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
@@ -237,11 +237,11 @@ export default function ContactsPageClient({ content }: ContactsPageClientProps)
               viewport={{ once: true, margin: '-50px' }}
               transition={{ duration: 0.4, ease: 'easeOut' }}
             >
-              <div className="bg-bg-secondary rounded-2xl p-8 shadow-lg">
-                <h2 className="text-3xl md:text-4xl font-bold text-text-primary mb-2">
+              <div className="bg-bg-secondary rounded-2xl p-6 md:p-8 shadow-lg">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-text-primary mb-2">
                   Напишите нам
                 </h2>
-                <p className="text-text-secondary mb-8">
+                <p className="text-sm sm:text-base text-text-secondary mb-6 md:mb-8">
                   Заполните форму, и мы свяжемся с вами в течение часа
                 </p>
                 <form onSubmit={handleSubmit} className="space-y-6">
@@ -365,7 +365,7 @@ export default function ContactsPageClient({ content }: ContactsPageClientProps)
               Мы находимся в центре города, к нам легко добраться на любом транспорте
             </p>
             <div className="rounded-2xl overflow-hidden shadow-2xl bg-white">
-              <div className="relative" style={{ height: '500px' }}>
+              <div className="relative h-[400px] md:h-[500px]">
                 <YandexMap 
                   key={`${mapLatitude}-${mapLongitude}-${mapZoom}`}
                   address={mapAddress}

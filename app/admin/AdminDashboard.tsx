@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
-import { Package, ShoppingCart, LogOut, Home, Wrench, Users, Phone, FolderTree } from 'lucide-react';
+import { Package, ShoppingCart, LogOut, Home, Wrench, Users, Phone, FolderTree, Lock, UserPlus } from 'lucide-react';
 import ProductsTab from './ProductsTab';
 import OrdersTab from './OrdersTab';
 import HomepageTab from './HomepageTab';
@@ -11,10 +11,12 @@ import ServicesTab from './ServicesTab';
 import AboutTab from './AboutTab';
 import ContactsTab from './ContactsTab';
 import CategoriesTab from './CategoriesTab';
+import ChangePasswordTab from './ChangePasswordTab';
+import AdminsTab from './AdminsTab';
 
 export default function AdminDashboard() {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<'homepage' | 'services' | 'about' | 'contacts' | 'products' | 'orders' | 'categories'>('homepage');
+  const [activeTab, setActiveTab] = useState<'homepage' | 'services' | 'about' | 'contacts' | 'products' | 'orders' | 'categories' | 'password' | 'admins'>('homepage');
 
   const handleLogout = async () => {
     const supabase = createClient();
@@ -122,6 +124,28 @@ export default function AdminDashboard() {
               <ShoppingCart className="w-5 h-5" />
               <span>Заказы</span>
             </button>
+            <button
+              onClick={() => setActiveTab('password')}
+              className={`flex items-center gap-2 px-6 py-4 border-b-2 transition-colors ${
+                activeTab === 'password'
+                  ? 'border-wood text-wood'
+                  : 'border-transparent text-gray-600 hover:text-gray-800'
+              }`}
+            >
+              <Lock className="w-5 h-5" />
+              <span>Пароль</span>
+            </button>
+            <button
+              onClick={() => setActiveTab('admins')}
+              className={`flex items-center gap-2 px-6 py-4 border-b-2 transition-colors ${
+                activeTab === 'admins'
+                  ? 'border-wood text-wood'
+                  : 'border-transparent text-gray-600 hover:text-gray-800'
+              }`}
+            >
+              <UserPlus className="w-5 h-5" />
+              <span>Администраторы</span>
+            </button>
           </div>
         </div>
       </div>
@@ -135,6 +159,8 @@ export default function AdminDashboard() {
         {activeTab === 'categories' && <CategoriesTab />}
         {activeTab === 'products' && <ProductsTab />}
         {activeTab === 'orders' && <OrdersTab />}
+        {activeTab === 'password' && <ChangePasswordTab />}
+        {activeTab === 'admins' && <AdminsTab />}
       </main>
     </div>
   );
