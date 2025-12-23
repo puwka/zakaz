@@ -58,3 +58,4 @@ script.src = 'https://api-maps.yandex.ru/2.1/?apikey=ВАШ_КЛЮЧ&lang=ru_RU'
 
 
 
+

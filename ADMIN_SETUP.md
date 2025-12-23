@@ -110,3 +110,4 @@ SUPABASE_SERVICE_ROLE_KEY=your-service-role-key-here
 - [Supabase Auth Admin API](https://supabase.com/docs/reference/javascript/auth-admin)
 - [Next.js Environment Variables](https://nextjs.org/docs/app/building-your-application/configuring/environment-variables)
 
+

@@ -76,3 +76,4 @@ CREATE POLICY "products_select_authenticated_test"
 -- 3. Database → Tables → products → Policies → проверьте список политик
 
 
+

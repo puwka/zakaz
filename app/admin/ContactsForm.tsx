@@ -8,12 +8,17 @@ import { createClient } from '@/lib/supabase/client';
 import { Plus, Trash2, MapPin } from 'lucide-react';
 import type { ContactsContent } from '@/types/database';
 import { companyInfo } from '@/lib/data';
+import { isValidPhone, formatPhoneInput } from '@/lib/phoneValidation';
 
 const contactsSchema = z.object({
   hero_title: z.string().min(1, 'Заголовок обязателен'),
   hero_subtitle: z.string().optional(),
   address: z.string().min(1, 'Адрес обязателен'),
-  phone: z.string().min(1, 'Телефон обязателен'),
+  phone: z.string()
+    .min(1, 'Телефон обязателен')
+    .refine((phone) => isValidPhone(phone), {
+      message: 'Введите корректный номер телефона (например: +7 (999) 123-45-67)',
+    }),
   email: z.string().email('Некорректный email').min(1, 'Email обязателен'),
   working_hours: z.string().optional(),
   instagram_url: z.string().optional(),
@@ -79,10 +84,19 @@ export default function ContactsForm({ content, onSave }: ContactsFormProps) {
     formState: { errors, isSubmitting },
     control,
     watch,
+    setValue,
   } = useForm<ContactsFormData>({
     resolver: zodResolver(contactsSchema),
     defaultValues,
   });
+
+  const phoneValue = watch('phone');
+
+  // Обработчик изменения телефона с маской
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const formatted = formatPhoneInput(e.target.value);
+    setValue('phone', formatted, { shouldValidate: false });
+  };
 
   const {
     fields: advantagesFields,
@@ -189,9 +203,20 @@ export default function ContactsForm({ content, onSave }: ContactsFormProps) {
               Телефон *
             </label>
             <input
-              type="text"
+              type="tel"
               {...register('phone')}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+              value={phoneValue || ''}
+              onChange={handlePhoneChange}
+              onBlur={() => {
+                // Валидация при потере фокуса
+                if (phoneValue) {
+                  setValue('phone', phoneValue, { shouldValidate: true });
+                }
+              }}
+              className={`w-full px-4 py-2 border rounded-lg ${
+                errors.phone ? 'border-red-300' : 'border-gray-300'
+              }`}
+              placeholder="+7 (999) 123-45-67"
             />
             {errors.phone && (
               <p className="mt-1 text-sm text-red-600">{errors.phone.message}</p>

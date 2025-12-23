@@ -3,9 +3,13 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ScrollProgress from '@/components/ScrollProgress';
 import { getContactsData } from '@/lib/getContacts';
+import { getCheckoutContent } from '@/lib/getCheckoutContent';
 
 export default async function CheckoutPage() {
-  const contacts = await getContactsData();
+  const [contacts, checkoutContent] = await Promise.all([
+    getContactsData(),
+    getCheckoutContent(),
+  ]);
 
   return (
     <div className="min-h-screen bg-bg-primary">
@@ -22,7 +26,7 @@ export default async function CheckoutPage() {
                 Заполните форму ниже, и мы свяжемся с вами для подтверждения заказа
               </p>
             </div>
-            <CheckoutForm />
+            <CheckoutForm checkoutContent={checkoutContent} />
           </div>
         </div>
       </main>

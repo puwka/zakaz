@@ -103,3 +103,4 @@
 - [Документация Supabase](https://supabase.com/docs)
 - [Инструкция по деплою](./DEPLOY.md)
 
+

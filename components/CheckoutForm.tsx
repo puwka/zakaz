@@ -10,9 +10,6 @@ import {
   User, 
   Phone, 
   ShoppingBag, 
-  Shield, 
-  Truck, 
-  CreditCard,
   CheckCircle2,
   AlertCircle
 } from 'lucide-react';
@@ -20,8 +17,9 @@ import { useCartStore } from '@/store/cart';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-
-const phoneRegex = /^(\+7|8)?[\s\-]?\(?[489][0-9]{2}\)?[\s\-]?[0-9]{3}[\s\-]?[0-9]{2}[\s\-]?[0-9]{2}$/;
+import { phoneRegex, formatPhoneInput, formatPhoneNumber, isValidPhone } from '@/lib/phoneValidation';
+import type { CheckoutContent } from '@/types/database';
+import * as LucideIcons from 'lucide-react';
 
 const checkoutSchema = z.object({
   customer_name: z
@@ -30,16 +28,34 @@ const checkoutSchema = z.object({
     .max(100, 'Имя слишком длинное'),
   customer_phone: z
     .string()
-    .regex(phoneRegex, 'Введите корректный номер телефона'),
+    .min(1, 'Телефон обязателен для заполнения')
+    .refine((phone) => isValidPhone(phone), {
+      message: 'Введите корректный номер телефона (например: +7 (999) 123-45-67)',
+    }),
 });
 
 type CheckoutFormData = z.infer<typeof checkoutSchema>;
 
-export default function CheckoutForm() {
+interface CheckoutFormProps {
+  checkoutContent?: CheckoutContent | null;
+}
+
+export default function CheckoutForm({ checkoutContent }: CheckoutFormProps) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const items = useCartStore((state) => state.items);
+  
+  // Получаем преимущества из БД или используем дефолтные
+  const defaultAdvantages = [
+    { icon: 'Shield', title: 'Гарантия качества', description: '5 лет гарантии на всю продукцию' },
+    { icon: 'Truck', title: 'Доставка и монтаж', description: 'Бесплатная доставка по Москве от 50 000 ₽' },
+    { icon: 'CreditCard', title: 'Безопасная оплата', description: 'Оплата при получении или онлайн' },
+  ];
+  
+  const advantages = checkoutContent?.advantages 
+    ? (Array.isArray(checkoutContent.advantages) ? checkoutContent.advantages : defaultAdvantages)
+    : defaultAdvantages;
   const getTotalPrice = useCartStore((state) => state.getTotalPrice);
   const getTotalItems = useCartStore((state) => state.getTotalItems);
   const clearCart = useCartStore((state) => state.clearCart);
@@ -48,20 +64,22 @@ export default function CheckoutForm() {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
+    watch,
   } = useForm<CheckoutFormData>({
     resolver: zodResolver(checkoutSchema),
   });
 
-  const formatPhoneNumber = (value: string) => {
-    const numbers = value.replace(/\D/g, '');
-    if (numbers.startsWith('8')) {
-      return numbers.replace(/^8/, '+7');
-    }
-    if (!numbers.startsWith('7') && !numbers.startsWith('8')) {
-      return '+7' + numbers;
-    }
-    return '+' + numbers;
+  const phoneValue = watch('customer_phone');
+
+  // Обработчик изменения телефона с маской
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = e.target.value;
+    const formatted = formatPhoneInput(inputValue);
+    setValue('customer_phone', formatted, { shouldValidate: false, shouldDirty: true });
   };
+
+  // Используем formatPhoneNumber из утилиты
 
   const onSubmit = async (data: CheckoutFormData) => {
     if (items.length === 0) {
@@ -211,7 +229,14 @@ export default function CheckoutForm() {
               <input
                 id="customer_phone"
                 type="tel"
-                {...register('customer_phone')}
+                value={phoneValue || ''}
+                onChange={handlePhoneChange}
+                onBlur={() => {
+                  // Валидация при потере фокуса
+                  if (phoneValue) {
+                    setValue('customer_phone', phoneValue, { shouldValidate: true });
+                  }
+                }}
                 className={`w-full px-4 py-3 border-2 rounded-xl transition-all duration-300 focus:outline-none ${
                   errors.customer_phone
                     ? 'border-red-300 focus:border-red-500'
@@ -368,45 +393,25 @@ export default function CheckoutForm() {
             Преимущества заказа
           </h3>
           <div className="space-y-4">
-            <div className="flex items-start gap-3">
-              <div className="w-10 h-10 rounded-lg bg-wood/10 flex items-center justify-center flex-shrink-0">
-                <Shield className="w-5 h-5 text-wood" />
-              </div>
-              <div>
-                <p className="font-semibold text-text-primary text-sm mb-1">
-                  Гарантия качества
-                </p>
-                <p className="text-xs text-text-secondary">
-                  5 лет гарантии на всю продукцию
-                </p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <div className="w-10 h-10 rounded-lg bg-wood/10 flex items-center justify-center flex-shrink-0">
-                <Truck className="w-5 h-5 text-wood" />
-              </div>
-              <div>
-                <p className="font-semibold text-text-primary text-sm mb-1">
-                  Доставка и монтаж
-                </p>
-                <p className="text-xs text-text-secondary">
-                  Бесплатная доставка по Москве от 50 000 ₽
-                </p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <div className="w-10 h-10 rounded-lg bg-wood/10 flex items-center justify-center flex-shrink-0">
-                <CreditCard className="w-5 h-5 text-wood" />
-              </div>
-              <div>
-                <p className="font-semibold text-text-primary text-sm mb-1">
-                  Безопасная оплата
-                </p>
-                <p className="text-xs text-text-secondary">
-                  Оплата при получении или онлайн
-                </p>
-              </div>
-            </div>
+            {advantages.map((advantage: any, index: number) => {
+              const IconName = advantage.icon || 'Shield';
+              const IconComponent = (LucideIcons as any)[IconName] || LucideIcons.Shield;
+              return (
+                <div key={index} className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-wood/10 flex items-center justify-center flex-shrink-0">
+                    <IconComponent className="w-5 h-5 text-wood" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-text-primary text-sm mb-1">
+                      {advantage.title}
+                    </p>
+                    <p className="text-xs text-text-secondary">
+                      {advantage.description}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </motion.div>
       </motion.div>

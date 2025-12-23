@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
-import { Package, ShoppingCart, LogOut, Home, Wrench, Users, Phone, FolderTree, Lock, UserPlus } from 'lucide-react';
+import { Package, ShoppingCart, LogOut, Home, Wrench, Users, Phone, FolderTree, Lock, UserPlus, FileText } from 'lucide-react';
 import ProductsTab from './ProductsTab';
 import OrdersTab from './OrdersTab';
 import HomepageTab from './HomepageTab';
@@ -13,10 +13,11 @@ import ContactsTab from './ContactsTab';
 import CategoriesTab from './CategoriesTab';
 import ChangePasswordTab from './ChangePasswordTab';
 import AdminsTab from './AdminsTab';
+import CheckoutTab from './CheckoutTab';
 
 export default function AdminDashboard() {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<'homepage' | 'services' | 'about' | 'contacts' | 'products' | 'orders' | 'categories' | 'password' | 'admins'>('homepage');
+  const [activeTab, setActiveTab] = useState<'homepage' | 'services' | 'about' | 'contacts' | 'products' | 'orders' | 'categories' | 'password' | 'admins' | 'checkout'>('homepage');
 
   const handleLogout = async () => {
     const supabase = createClient();
@@ -125,6 +126,17 @@ export default function AdminDashboard() {
               <span>Заказы</span>
             </button>
             <button
+              onClick={() => setActiveTab('checkout')}
+              className={`flex items-center gap-2 px-6 py-4 border-b-2 transition-colors ${
+                activeTab === 'checkout'
+                  ? 'border-wood text-wood'
+                  : 'border-transparent text-gray-600 hover:text-gray-800'
+              }`}
+            >
+              <FileText className="w-5 h-5" />
+              <span>Оформление заказа</span>
+            </button>
+            <button
               onClick={() => setActiveTab('password')}
               className={`flex items-center gap-2 px-6 py-4 border-b-2 transition-colors ${
                 activeTab === 'password'
@@ -159,6 +171,7 @@ export default function AdminDashboard() {
         {activeTab === 'categories' && <CategoriesTab />}
         {activeTab === 'products' && <ProductsTab />}
         {activeTab === 'orders' && <OrdersTab />}
+        {activeTab === 'checkout' && <CheckoutTab />}
         {activeTab === 'password' && <ChangePasswordTab />}
         {activeTab === 'admins' && <AdminsTab />}
       </main>

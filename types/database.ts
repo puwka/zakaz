@@ -225,5 +225,12 @@ export interface ContactsContent {
   updated_at: string;
 }
 
+export interface CheckoutContent {
+  id: string;
+  advantages: Json;
+  created_at: string;
+  updated_at: string;
+}
+
 
 

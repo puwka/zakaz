@@ -9,6 +9,7 @@ import ScrollProgress from '@/components/ScrollProgress';
 import YandexMap from '@/components/YandexMap';
 import type { ContactsContent } from '@/types/database';
 import { companyInfo } from '@/lib/data';
+import { isValidPhone, formatPhoneInput, formatPhoneNumber, getPhoneErrorMessage } from '@/lib/phoneValidation';
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   Clock,
@@ -28,6 +29,7 @@ export default function ContactsPageClient({ content }: ContactsPageClientProps)
     phone: '',
     message: '',
   });
+  const [phoneError, setPhoneError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<{
     type: 'success' | 'error' | null;
@@ -64,14 +66,27 @@ export default function ContactsPageClient({ content }: ContactsPageClientProps)
     setSubmitStatus({ type: null, message: '' });
 
     // Валидация
-    if (!formData.name.trim() || !formData.phone.trim() || !formData.message.trim()) {
+    if (!formData.name.trim() || !formData.message.trim()) {
       setSubmitStatus({
         type: 'error',
-        message: 'Пожалуйста, заполните все поля',
+        message: 'Пожалуйста, заполните все обязательные поля',
       });
       setIsSubmitting(false);
       return;
     }
+
+    // Валидация телефона
+    const phoneErrorMsg = getPhoneErrorMessage(formData.phone);
+    if (phoneErrorMsg) {
+      setPhoneError(phoneErrorMsg);
+      setSubmitStatus({
+        type: 'error',
+        message: phoneErrorMsg,
+      });
+      setIsSubmitting(false);
+      return;
+    }
+    setPhoneError('');
 
     try {
       const response = await fetch('/api/telegram', {
@@ -81,7 +96,7 @@ export default function ContactsPageClient({ content }: ContactsPageClientProps)
         },
         body: JSON.stringify({
           name: formData.name.trim(),
-          phone: formData.phone.trim(),
+          phone: formatPhoneNumber(formData.phone),
           message: formData.message.trim(),
         }),
       });
@@ -121,10 +136,29 @@ export default function ContactsPageClient({ content }: ContactsPageClientProps)
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+    
+    // Специальная обработка для поля телефона
+    if (name === 'phone') {
+      const formatted = formatPhoneInput(value);
+      setFormData({
+        ...formData,
+        phone: formatted,
+      });
+      
+      // Валидация в реальном времени (только если пользователь начал вводить)
+      if (formatted.length > 0) {
+        const errorMsg = getPhoneErrorMessage(formatted);
+        setPhoneError(errorMsg);
+      } else {
+        setPhoneError('');
+      }
+    } else {
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
+    }
   };
 
   const contactItems = [
@@ -278,9 +312,17 @@ export default function ContactsPageClient({ content }: ContactsPageClientProps)
                       value={formData.phone}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-wood focus:border-transparent transition-all duration-200"
+                      className={`w-full px-4 py-3 bg-white border rounded-lg focus:ring-2 focus:ring-wood focus:border-transparent transition-all duration-200 ${
+                        phoneError ? 'border-red-300 focus:ring-red-500' : 'border-gray-300'
+                      }`}
                       placeholder="+7 (999) 123-45-67"
                     />
+                    {phoneError && (
+                      <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+                        <AlertCircle className="w-4 h-4" />
+                        {phoneError}
+                      </p>
+                    )}
                   </div>
 
                   <div>

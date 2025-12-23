@@ -52,25 +52,26 @@ export default function Header() {
   const needsLightText = isHomePage && !isScrolled;
 
   return (
-    <motion.header
-      initial={{ y: 0, opacity: 1 }}
-      animate={{
-        y: 0,
-        opacity: 1,
-        backdropFilter: 'blur(12px)',
-        backgroundColor: isScrolled 
-          ? 'rgba(255, 255, 255, 0.95)' 
-          : isHomePage 
-            ? 'rgba(0, 0, 0, 0.3)' // Темный полупрозрачный фон на главной
-            : 'rgba(255, 255, 255, 0.95)', // Белый фон на других страницах
-      }}
-      transition={{ duration: 0.3, ease: 'easeInOut' }}
-      className={`fixed top-0 left-0 right-0 z-40 ${
-        isScrolled
-          ? 'border-b border-gray-200/50 shadow-sm'
-          : ''
-      }`}
-    >
+    <>
+      <motion.header
+        initial={{ y: 0, opacity: 1 }}
+        animate={{
+          y: 0,
+          opacity: 1,
+          backdropFilter: 'blur(12px)',
+          backgroundColor: isScrolled 
+            ? 'rgba(255, 255, 255, 0.95)' 
+            : isHomePage 
+              ? 'rgba(0, 0, 0, 0.3)' // Темный полупрозрачный фон на главной
+              : 'rgba(255, 255, 255, 0.95)', // Белый фон на других страницах
+        }}
+        transition={{ duration: 0.3, ease: 'easeInOut' }}
+        className={`fixed top-0 left-0 right-0 z-40 ${
+          isScrolled
+            ? 'border-b border-gray-200/50 shadow-sm'
+            : ''
+        }`}
+      >
       <div className="container mx-auto px-4 md:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 md:h-20">
           <Link
@@ -144,11 +145,15 @@ export default function Header() {
             
             {/* Mobile Menu Button */}
             <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className={`md:hidden p-2 rounded-lg transition-colors z-50 ${
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsMobileMenuOpen(!isMobileMenuOpen);
+              }}
+              className={`md:hidden p-2 rounded-lg transition-colors relative z-[51] ${
                 needsLightText ? 'text-white hover:bg-white/10' : 'text-text-primary hover:bg-gray-100'
               }`}
-              aria-label="Меню"
+              aria-label={isMobileMenuOpen ? 'Закрыть меню' : 'Открыть меню'}
+              aria-expanded={isMobileMenuOpen}
             >
               {isMobileMenuOpen ? (
                 <X className="w-6 h-6" />
@@ -159,55 +164,68 @@ export default function Header() {
           </div>
         </div>
       </div>
-
-      {/* Mobile Menu */}
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <>
-            {/* Overlay */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="fixed inset-0 bg-black/50 z-40 md:hidden"
-              onClick={() => setIsMobileMenuOpen(false)}
-            />
-            
-            {/* Menu Panel */}
-            <motion.nav
-              initial={{ x: '100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '100%' }}
-              transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-              className="fixed top-0 right-0 bottom-0 w-80 max-w-[85vw] bg-white shadow-2xl z-50 md:hidden overflow-y-auto"
-            >
-              <div className="p-6 pt-20">
-                <ul className="space-y-1">
-                  {navLinks.map((link) => {
-                    const isActive = pathname === link.href;
-                    return (
-                      <li key={link.href}>
-                        <Link
-                          href={link.href}
-                          onClick={() => setIsMobileMenuOpen(false)}
-                          className={`block px-4 py-3 rounded-lg text-base font-medium transition-colors ${
-                            isActive
-                              ? 'bg-wood text-white'
-                              : 'text-text-primary hover:bg-gray-100'
-                          }`}
-                        >
-                          {link.label}
-                        </Link>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
-            </motion.nav>
-          </>
-        )}
-      </AnimatePresence>
     </motion.header>
+
+    {/* Mobile Menu - вынесено за пределы header для правильного z-index */}
+    <AnimatePresence>
+      {isMobileMenuOpen && (
+        <>
+          {/* Overlay */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 bg-black/50 z-[45] md:hidden"
+            onClick={() => setIsMobileMenuOpen(false)}
+          />
+          
+          {/* Menu Panel */}
+          <motion.nav
+            initial={{ x: '100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '100%' }}
+            transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+            className="fixed top-0 right-0 bottom-0 w-80 max-w-[85vw] bg-white shadow-2xl z-[50] md:hidden overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close button in menu */}
+            <div className="flex items-center justify-between p-4 border-b border-gray-200">
+              <h2 className="text-lg font-bold text-text-primary">Меню</h2>
+              <button
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                aria-label="Закрыть меню"
+              >
+                <X className="w-5 h-5 text-text-primary" />
+              </button>
+            </div>
+            <div className="p-6">
+              <ul className="space-y-1">
+                {navLinks.map((link) => {
+                  const isActive = pathname === link.href;
+                  return (
+                    <li key={link.href}>
+                      <Link
+                        href={link.href}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className={`block px-4 py-3 rounded-lg text-base font-medium transition-colors ${
+                          isActive
+                            ? 'bg-wood text-white'
+                            : 'text-text-primary hover:bg-gray-100'
+                        }`}
+                      >
+                        {link.label}
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          </motion.nav>
+        </>
+      )}
+    </AnimatePresence>
+  </>
   );
 }

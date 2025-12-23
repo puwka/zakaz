@@ -50,3 +50,4 @@ CREATE POLICY "Админ может читать позиции заказа"
 -- WHERE tablename IN ('orders', 'order_items');
 -- Должны быть видны все созданные политики
 
+
