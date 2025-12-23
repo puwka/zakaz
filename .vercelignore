@@ -1,0 +1,12 @@
+# Игнорируем файлы при деплое на Vercel
+node_modules
+.next
+.env*.local
+.env
+*.log
+.DS_Store
+supabase/*.sql
+*.md
+!README.md
+!DEPLOY.md
+
