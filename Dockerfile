@@ -1,9 +1,8 @@
-# Используем официальный образ Node.js
-FROM node:20-alpine AS base
+# Используем официальный образ Node.js (slim вместо alpine для лучшей совместимости)
+FROM node:20-slim AS base
 
 # Устанавливаем зависимости только если они нужны
 FROM base AS deps
-RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 # Копируем файлы зависимостей
@@ -29,8 +28,8 @@ WORKDIR /app
 ENV NODE_ENV production
 ENV NEXT_TELEMETRY_DISABLED 1
 
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
+RUN groupadd --system --gid 1001 nodejs
+RUN useradd --system --uid 1001 nextjs
 
 # Копируем необходимые файлы из standalone сборки
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
