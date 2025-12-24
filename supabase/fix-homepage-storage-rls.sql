@@ -59,3 +59,5 @@ CREATE POLICY "homepage_authenticated_delete"
 -- (RLS всегда включен для storage.objects в Supabase)
 
 
+
+
