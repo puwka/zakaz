@@ -7,7 +7,8 @@ WORKDIR /app
 
 # Копируем файлы зависимостей
 COPY package.json package-lock.json* ./
-RUN npm ci
+# Используем npm install для автоматического обновления lock file при необходимости
+RUN npm install
 
 # Собираем приложение
 FROM base AS builder
